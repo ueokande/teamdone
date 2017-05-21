@@ -26,7 +26,7 @@ type MySQL struct {
 }
 
 func (info MySQL) DSN() string {
-	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
+	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true",
 		info.Username, info.Password,
 		info.Host, info.Port,
 		info.Name)
