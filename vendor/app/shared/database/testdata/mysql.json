@@ -1,0 +1,8 @@
+{
+  "adapter": "mysql",
+  "database": "teamdone",
+  "username": "alice",
+  "password": "secret",
+  "host": "localhost",
+  "port": 3306
+}
