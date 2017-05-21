@@ -11,7 +11,7 @@ CREATE TABLE `user` (
 CREATE TABLE `org` (
   `id` INTEGER(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `name`  VARCHAR(64) NOT NULL,
-  `key` CHAR(64) NOT NULL,
+  `key` CHAR(64) NOT NULL UNIQUE,
 
   INDEX (`key`)
 );
@@ -30,6 +30,7 @@ CREATE TABLE `task` (
   `summary` VARCHAR(64) NOT NULL,
   `description` VARCHAR(512) NOT NULL,
   `due` INTEGER(11) NOT NULL,
+  `done` TINYINT(1) NOT NULL,
   `created_at` INTEGER(11) NOT NULL,
   `updated_at` INTEGER(11) NOT NULL,
 
