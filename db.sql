@@ -1,0 +1,37 @@
+DROP TABLE IF EXISTS `member`;
+DROP TABLE IF EXISTS `task`;
+DROP TABLE IF EXISTS `org`;
+DROP TABLE IF EXISTS `user`;
+
+CREATE TABLE `user` (
+  `id` INTEGER(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `name`  VARCHAR(64) NOT NULL
+);
+
+CREATE TABLE `org` (
+  `id` INTEGER(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `name`  VARCHAR(64) NOT NULL,
+  `key` CHAR(64) NOT NULL,
+
+  INDEX (`key`)
+);
+
+CREATE TABLE `member` (
+  `user_id` INTEGER(11) NOT NULL,
+  `org_id` INTEGER(11) NOT NULL,
+
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  FOREIGN KEY (`org_id`) REFERENCES `org` (`id`)
+);
+
+CREATE TABLE `task` (
+  `id` INTEGER(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `org_id` INTEGER(11) NOT NULL,
+  `summary` VARCHAR(64) NOT NULL,
+  `description` VARCHAR(512) NOT NULL,
+  `due` INTEGER(11) NOT NULL,
+  `created_at` INTEGER(11) NOT NULL,
+  `updated_at` INTEGER(11) NOT NULL,
+
+  FOREIGN KEY (`org_id`) REFERENCES `org` (`id`)
+);
