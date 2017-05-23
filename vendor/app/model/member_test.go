@@ -8,33 +8,41 @@ import (
 
 func setup() ([]int64, []int64, error) {
 	var err error
-	oid := make([]int64, 2, 2)
-	uid := make([]int64, 2, 2)
-
-	oid[0], err = OrgCreate("wonderland", shared.RandomKey())
-	if err != nil {
-		return nil, nil, err
+	orgs := []string{
+		"wonderland",
+		"glass",
 	}
-	oid[1], err = OrgCreate("glass", shared.RandomKey())
-	if err != nil {
-		return nil, nil, err
+	users := []string{
+		"alice",
+		"bob",
 	}
-	uid[0], err = UserCreate("alice")
-	if err != nil {
-		return nil, nil, err
-	}
-	uid[1], err = UserCreate("bob")
-	if err != nil {
-		return nil, nil, err
+	members := map[int][]int{
+		0: {0},
+		1: {1},
 	}
 
-	err = MemberCreate(oid[0], uid[0])
-	if err != nil {
-		return nil, nil, err
+	oid := make([]int64, len(orgs), len(orgs))
+	for i, name := range orgs {
+		oid[i], err = OrgCreate(name, shared.RandomKey())
+		if err != nil {
+			return nil, nil, err
+		}
 	}
-	err = MemberCreate(oid[1], uid[1])
-	if err != nil {
-		return nil, nil, err
+	uid := make([]int64, len(users), len(users))
+	for i, name := range users {
+		uid[i], err = UserCreate(name)
+		if err != nil {
+			return nil, nil, err
+		}
+	}
+
+	for o, mem := range members {
+		for _, u := range mem {
+			err = MemberCreate(oid[o], uid[u])
+			if err != nil {
+				return nil, nil, err
+			}
+		}
 	}
 	return oid, uid, nil
 }
