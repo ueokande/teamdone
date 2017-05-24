@@ -18,7 +18,7 @@ type Task struct {
 
 func TaskCreate(oid int64, summary string, description string, due *time.Time) (int64, error) {
 	result, err := database.SQL.Exec(
-		"INSERT INTO task (org_id, summary, description, due, done) VALUES (?, ?, ?, ?, ?)",
+		"INSERT INTO task (org_id, summary, description, due, done, created_at, updated_at) VALUES (?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_TIME)",
 		oid, summary, description, due, false)
 	if err != nil {
 		return 0, err
