@@ -39,3 +39,24 @@ func TaskById(id int64) (*Task, error) {
 
 	return &t, err
 }
+
+func TaskByOrgId(oid int64) ([]*Task, error) {
+	rows, err := database.SQL.Query(
+		"SELECT id, org_id, summary, description, due, done, created_at, updated_at FROM task WHERE org_id = ?",
+		oid)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	tasks := make([]*Task, 0)
+	for rows.Next() {
+		var t Task
+		err := rows.Scan(&t.Id, &t.OrgId, &t.Summary, &t.Description, &t.Due, &t.Done, &t.CreatedAt, &t.UpdatedAt)
+		if err != nil {
+			return nil, err
+		}
+		tasks = append(tasks, &t)
+	}
+	return tasks, nil
+}
