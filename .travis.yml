@@ -1,0 +1,18 @@
+sudo: false
+language: go
+go:
+  - 1.8.x
+services:
+  - mysql
+before_install:
+  - mysql -e 'CREATE DATABASE teamdone_test;'
+  - mysql teamdone_test <db.sql
+  - |
+    echo >config/test.json '
+    {
+      "adapter": "mysql",
+      "database": "teamdone_test",
+      "username": "travis",
+      "host": "localhost",
+      "port": 3306
+    }'
