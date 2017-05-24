@@ -1,0 +1,8 @@
+{
+  "adapter": "mysql",
+  "database": "teamdone_test",
+  "username": "teamdone",
+  "password": "teamdone",
+  "host": "localhost",
+  "port": 3306
+}
