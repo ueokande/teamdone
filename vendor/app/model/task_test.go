@@ -84,7 +84,7 @@ func TestTaskByOrgId(t *testing.T) {
 	}
 	if len(tasks) != 2 ||
 		tasks[0].Summary != "apple" || tasks[1].Summary != "banana" ||
-		tasks[0].Due == nil || *tasks[1].Due == time.Date(2010, time.December, 24, 0, 0, 0, 0, time.UTC) {
-		t.Fatal("Unexpected tasks:", tasks[0], tasks[1])
+		tasks[0].Due != nil || *tasks[1].Due != time.Date(2010, time.December, 24, 0, 0, 0, 0, time.UTC) {
+		t.Fatal("Unexpected task len:", tasks)
 	}
 }
