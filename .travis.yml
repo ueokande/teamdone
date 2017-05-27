@@ -4,7 +4,10 @@ go:
   - 1.8.x
 services:
   - mysql
-before_install:
+install:
+  - go get github.com/go-sql-driver/mysql
+  - go get github.com/labstack/echo
+before_script:
   - mysql -e 'CREATE DATABASE teamdone_test;'
   - mysql teamdone_test <db.sql
   - |
