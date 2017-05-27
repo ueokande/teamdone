@@ -1,7 +1,7 @@
 package route
 
 import (
-	"fmt"
+	"app/controller"
 	"net/http"
 )
 
@@ -10,9 +10,9 @@ type ApiHandler struct{}
 func (h ApiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch {
 	case r.Method == http.MethodPost && r.URL.Path == "/session/create":
-		fmt.Fprintf(w, "login")
+		controller.SessionCreate(w, r)
 	case r.Method == http.MethodDelete && r.URL.Path == "/session/delete":
-		fmt.Fprintf(w, "logout")
+		controller.SessionDelete(w, r)
 	default:
 		http.NotFound(w, r)
 	}
