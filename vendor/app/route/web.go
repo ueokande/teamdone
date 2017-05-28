@@ -1,6 +1,7 @@
 package route
 
 import (
+	"app/controller"
 	"fmt"
 	"net/http"
 	"strings"
@@ -20,7 +21,7 @@ func (h WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case r.URL.Path == "/settings":
 		fmt.Fprintf(w, "settings")
 	case r.URL.Path == "/":
-		fmt.Fprintf(w, "home")
+		controller.TopGet(w, r)
 	case strings.HasPrefix(r.URL.Path, "/") && len(r.URL.Path[1:]) == KeyLen:
 		fmt.Fprintf(w, "team:"+r.URL.Path[1:])
 	default:
