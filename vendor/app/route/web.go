@@ -20,7 +20,7 @@ func (h WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case r.URL.Path == "/settings":
 		controller.SettingsGet(w, r)
 	case r.URL.Path == "/":
-		controller.TopGet(w, r)
+		controller.HomeGet(w, r)
 	case strings.HasPrefix(r.URL.Path, "/") && len(r.URL.Path[1:]) == KeyLen:
 		key := r.URL.Path[1:]
 		controller.OrgGet(key, w, r)
