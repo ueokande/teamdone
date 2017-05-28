@@ -6,7 +6,7 @@ services:
   - mysql
 install:
   - go get github.com/go-sql-driver/mysql
-  - go get github.com/labstack/echo
+  - go get github.com/bradfitz/gomemcache/memcache
 before_script:
   - mysql -e 'CREATE DATABASE teamdone_test;'
   - mysql teamdone_test <db.sql

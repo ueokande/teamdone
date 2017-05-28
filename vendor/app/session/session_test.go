@@ -5,8 +5,6 @@ import (
 	"net/http/httptest"
 	"testing"
 	"time"
-
-	"github.com/labstack/echo"
 )
 
 func setupSessionTest() error {
@@ -59,9 +57,6 @@ func TestStartSession_StoredSession(t *testing.T) {
 }
 
 func TestStartSession_NoneCookie(t *testing.T) {
-	e := echo.New()
-	defer e.Close()
-
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	resp := httptest.ResponseRecorder{}
 
@@ -76,9 +71,6 @@ func TestStartSession_NoneCookie(t *testing.T) {
 }
 
 func TestStartSession_EmptyCookie(t *testing.T) {
-	e := echo.New()
-	defer e.Close()
-
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	req.Header.Add("Cookie", defaultSessionManager.CookieName+"=")
 	resp := httptest.ResponseRecorder{}
@@ -94,9 +86,6 @@ func TestStartSession_EmptyCookie(t *testing.T) {
 }
 
 func TestStartSession_UnknownSession(t *testing.T) {
-	e := echo.New()
-	defer e.Close()
-
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	req.Header.Add("Cookie", defaultSessionManager.CookieName+"=gone-session")
 	resp := httptest.ResponseRecorder{}
@@ -114,9 +103,6 @@ func TestStartSession_UnknownSession(t *testing.T) {
 }
 
 func TestDestroySession(t *testing.T) {
-	e := echo.New()
-	defer e.Close()
-
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	req.Header.Add("Cookie", defaultSessionManager.CookieName+"=current-session")
 	resp := httptest.ResponseRecorder{}
