@@ -1,8 +1,10 @@
 package main
 
 import (
+	"app/render"
 	"app/route"
 	"app/shared/database"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -21,9 +23,14 @@ func run() int {
 		return 1
 	}
 
+	render.InitTemplateRenderer(template.Must(template.ParseGlob("template/*.html")))
+
 	mux := http.NewServeMux()
 	mux.Handle("/", route.WebHandler{})
 	mux.Handle("/i/", http.StripPrefix("/i", route.ApiHandler{}))
+	mux.HandleFunc("/assets/index.js", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "build/index.js")
+	})
 
 	err = http.ListenAndServe(":8080", mux)
 	if err != nil {
