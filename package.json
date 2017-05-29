@@ -2,7 +2,10 @@
   "description": "accelerate team tasks",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack",
+    "start": "webpack --watch",
+    "test": "karma start",
+    "lint": "eslint -c .eslintrc assets/**/*.{js,jsx}"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",
