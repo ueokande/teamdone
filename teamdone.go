@@ -3,6 +3,7 @@ package main
 import (
 	"app/render"
 	"app/route"
+	"app/shared/csrf"
 	"app/shared/database"
 	"html/template"
 	"log"
@@ -26,8 +27,8 @@ func run() int {
 	render.InitTemplateRenderer(template.Must(template.ParseGlob("template/*.html")))
 
 	mux := http.NewServeMux()
-	mux.Handle("/", route.WebHandler{})
-	mux.Handle("/i/", http.StripPrefix("/i", route.ApiHandler{}))
+	mux.Handle("/", csrf.DefaultCSRF(route.WebHandler{}))
+	mux.Handle("/i/", csrf.DefaultCSRF(http.StripPrefix("/i", route.ApiHandler{})))
 	mux.HandleFunc("/assets/index.js", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "build/index.js")
 	})

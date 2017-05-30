@@ -38,7 +38,14 @@ func randomToken(length int) string {
 	return string(b)
 }
 
-func (h CSRFHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func DefaultCSRF(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		DefaultCSRFHandler.ServeHTTP(w, r)
+		h.ServeHTTP(w, r)
+	})
+}
+
+func (h *CSRFHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie(h.CookieName)
 	var token string
 	if err != nil {
