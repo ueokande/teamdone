@@ -8,6 +8,8 @@ import (
 	"github.com/labstack/echo"
 )
 
+var empty = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {})
+
 func cookieByName(cookies []*http.Cookie, name string) *http.Cookie {
 	for _, c := range cookies {
 		if c.Name == name {
@@ -21,7 +23,7 @@ func TestServeHTTP_Get(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	rec := httptest.NewRecorder()
 
-	DefaultCSRFHandler.ServeHTTP(rec, req)
+	DefaultCSRF(empty).ServeHTTP(rec, req)
 
 	res := rec.Result()
 	cookie := cookieByName(res.Cookies(), "_request_token")
@@ -52,7 +54,7 @@ func TestServeHTTP_ValidPost(t *testing.T) {
 		}
 		rec := httptest.NewRecorder()
 
-		DefaultCSRFHandler.ServeHTTP(rec, req)
+		DefaultCSRF(empty).ServeHTTP(rec, req)
 
 		res := rec.Result()
 		if res.StatusCode != c.status {

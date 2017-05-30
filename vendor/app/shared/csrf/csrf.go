@@ -12,13 +12,8 @@ type CSRFHandler struct {
 	CookieName   string
 	TokenLength  int
 	CookieMaxAge int
-}
 
-var DefaultCSRFHandler = CSRFHandler{
-	TokenLength:  32,
-	HeaderName:   "X-Request-Token",
-	CookieName:   "_request_token",
-	CookieMaxAge: 86400,
+	handler http.Handler
 }
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -39,10 +34,13 @@ func randomToken(length int) string {
 }
 
 func DefaultCSRF(h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		DefaultCSRFHandler.ServeHTTP(w, r)
-		h.ServeHTTP(w, r)
-	})
+	return &CSRFHandler{
+		TokenLength:  32,
+		HeaderName:   "X-Request-Token",
+		CookieName:   "_request_token",
+		CookieMaxAge: 86400,
+		handler:      h,
+	}
 }
 
 func (h *CSRFHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -71,4 +69,5 @@ func (h *CSRFHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	http.SetCookie(w, cookie)
 	w.Header().Set("Vary", "Cookie")
+	h.handler.ServeHTTP(w, r)
 }
