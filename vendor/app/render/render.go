@@ -5,18 +5,18 @@ import (
 	"io"
 )
 
-var defaultRenderer Renderer
+var DefaultRenderer Renderer
 
 type Renderer interface {
 	Render(io.Writer, string, interface{}) error
 }
 
 func InitTemplateRenderer(t *template.Template) {
-	defaultRenderer = &TemplateRenderer{t}
+	DefaultRenderer = &TemplateRenderer{t}
 }
 
 func Render(w io.Writer, name string, data interface{}) error {
-	return defaultRenderer.Render(w, name, data)
+	return DefaultRenderer.Render(w, name, data)
 }
 
 type TemplateRenderer struct {
