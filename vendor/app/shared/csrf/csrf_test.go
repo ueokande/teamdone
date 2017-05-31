@@ -4,8 +4,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"github.com/labstack/echo"
 )
 
 var empty = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {})
@@ -47,7 +45,7 @@ func TestServeHTTP_ValidPost(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		req := httptest.NewRequest(echo.POST, "/", nil)
+		req := httptest.NewRequest(http.MethodPost, "/", nil)
 		req.Header.Add("Cookie", "_request_token=secret-csrf-token")
 		if c.set {
 			req.Header.Set("X-Request-Token", c.token)
