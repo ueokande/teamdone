@@ -14,14 +14,15 @@ func HomeGet(w http.ResponseWriter, r *http.Request) {
 		InternalServerError(w, r)
 		return
 	}
-	uid, ok := s.Values["user_id"].(int64)
+	uidf, ok := s.Values["user_id"].(float64)
+	uid := int64(uidf)
 	if !ok {
 		LandingGet(w, r)
 		return
 	}
 
 	orgs, err := model.OrgsByUserId(uid)
-	if err != sql.ErrNoRows {
+	if err == sql.ErrNoRows {
 		LandingGet(w, r)
 		return
 	} else if len(orgs) == 1 {
