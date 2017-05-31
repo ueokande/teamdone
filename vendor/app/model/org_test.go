@@ -1,6 +1,8 @@
 package model
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestOrgCreate(t *testing.T) {
 	id, err := OrgCreate("wonderland", "abcd1234")
@@ -36,4 +38,28 @@ func TestOrgByKey(t *testing.T) {
 	if o.Id != id {
 		t.Fatal("Unexpected org id:", o.Id)
 	}
+}
+
+func TestOrgsByUserId(t *testing.T) {
+	oid, uid, err := setupMemberTest()
+	if err != nil {
+		t.Fatal("Unexpected error:", err)
+	}
+
+	orgs, err := OrgsByUserId(uid[0])
+	if err != nil {
+		t.Fatal("Unexpected error:", err)
+	}
+	if len(orgs) != 1 || orgs[0].Id != oid[0] {
+		t.Fatal("Unexpected orgs:", orgs)
+	}
+
+	orgs, err = OrgsByUserId(uid[2])
+	if err != nil {
+		t.Fatal("Unexpected error:", err)
+	}
+	if len(orgs) != 2 || orgs[0].Id != oid[0] || orgs[1].Id != oid[1] {
+		t.Fatal("Unexpected orgs:", orgs)
+	}
+
 }
