@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 )
 
@@ -27,6 +28,12 @@ func TestOrgCreateApi(t *testing.T) {
 
 		if code := rec.Code; code != c.code {
 			t.Fatal("Unexpected staus code:", code)
+		}
+		if rec.Code != http.StatusOK {
+			continue
+		}
+		if body := string(rec.Body.Bytes()); !strings.Contains(body, `"Key"`) {
+			t.Fatal("Unexpected body:", body)
 		}
 	}
 }
