@@ -2,6 +2,7 @@ package controller
 
 import (
 	"app/model"
+	"bytes"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -45,4 +46,39 @@ func TestSessionGetApi_NoSessionUser(t *testing.T) {
 	if rec.Code != http.StatusNotFound {
 		t.Fatal("Unexpected status:", rec.Code)
 	}
+}
+
+func TestSessionCreateApiTest(t *testing.T) {
+	cases := []struct {
+		req  string
+		code int
+	}{
+		{`{}`, http.StatusBadRequest},
+		{`{ "Name" : "" }`, http.StatusBadRequest},
+		{`{ "Name"}`, http.StatusBadRequest},
+		{`{ "Name": "alice" }`, http.StatusOK},
+	}
+
+	for _, c := range cases {
+		req := httptest.NewRequest(http.MethodGet, "/i/session/create", bytes.NewReader([]byte(c.req)))
+		rec := httptest.NewRecorder()
+
+		SessionCreateApi(rec, req)
+
+		if rec.Code != http.StatusOK {
+			continue
+		}
+		resp := make(map[string]interface{})
+		err := json.NewDecoder(bytes.NewReader(rec.Body.Bytes())).Decode(&resp)
+		if err != nil {
+			t.Fatal("Unexpected error:", err)
+		}
+		if _, ok := resp["Id"]; !ok {
+			t.Fatal("Unexpected response:", resp)
+		}
+		if _, ok := resp["Name"]; !ok {
+			t.Fatal("Unexpected response:", resp)
+		}
+	}
+
 }
