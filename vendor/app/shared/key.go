@@ -2,7 +2,7 @@ package shared
 
 import "math/rand"
 
-var charset = []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ234567")
+var charset = []byte("abcdefghijklmnopqrstuvwxyz234567")
 
 func RandomKey() string {
 	b := make([]byte, 32)

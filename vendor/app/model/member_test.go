@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func setup() ([]int64, []int64, error) {
+func setupMemberTest() ([]int64, []int64, error) {
 	var err error
 	orgs := []string{
 		"wonderland",
@@ -50,7 +50,7 @@ func setup() ([]int64, []int64, error) {
 }
 
 func TestMemberExists(t *testing.T) {
-	oid, uid, err := setup()
+	oid, uid, err := setupMemberTest()
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
@@ -83,7 +83,7 @@ func TestMemberExists(t *testing.T) {
 }
 
 func TestMembersByOrgId(t *testing.T) {
-	oid, uid, err := setup()
+	oid, uid, err := setupMemberTest()
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
@@ -106,7 +106,7 @@ func TestMembersByOrgId(t *testing.T) {
 }
 
 func TestMembersByUserId(t *testing.T) {
-	oid, uid, err := setup()
+	oid, uid, err := setupMemberTest()
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}

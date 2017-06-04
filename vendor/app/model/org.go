@@ -45,3 +45,24 @@ func OrgByKey(key string) (*Org, error) {
 
 	return &o, err
 }
+
+func OrgsByUserId(uid int64) ([]*Org, error) {
+	rows, err := database.SQL.Query(
+		"SELECT id, name, `key` from org INNSER JOIN member ON id = member.org_id WHERE user_id = ?",
+		uid)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	orgs := make([]*Org, 0)
+	for rows.Next() {
+		o := new(Org)
+		err := rows.Scan(&o.Id, &o.Name, &o.Key)
+		if err != nil {
+			return nil, err
+		}
+		orgs = append(orgs, o)
+	}
+	return orgs, nil
+}

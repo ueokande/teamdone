@@ -2,5 +2,5 @@ import injectTapEventPlugin from "react-tap-event-plugin";
 
 injectTapEventPlugin();
 
-require('./top/index');
+require('./landing/index');
 require('./org/index');

@@ -7,11 +7,15 @@ import (
 	"app/shared/database"
 	"html/template"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
+	"time"
 )
 
 func run() int {
+	rand.Seed(time.Now().UnixNano())
+
 	logger := log.New(os.Stderr, "logger: ", log.Lshortfile)
 
 	db, err := database.LoadConfig("config/development.json")
