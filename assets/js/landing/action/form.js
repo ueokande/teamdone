@@ -1,4 +1,4 @@
-import {getRequestToken} from '../../shared/request-token';
+import * as api from '../../shared/api';
 
 export function clientError(message) {
   return {
@@ -16,18 +16,7 @@ export function serverError(message) {
 
 export function submit(orgName, successed) {
   return (dispatch) => {
-    let url = "/i/org/create"
-    fetch(url, {
-      method: 'POST',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Request-Token': getRequestToken()
-      },
-      body: JSON.stringify({
-        OrgName: orgName
-      })
-    })
+    api.orgCreate(orgName)
     .then((response) => {
       let status = response.status;
       if (status >= 200 && status < 300) {
