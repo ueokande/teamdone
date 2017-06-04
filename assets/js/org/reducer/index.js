@@ -1,13 +1,6 @@
-import {combineReducers} from "redux"
+import {combineReducers} from "redux";
+import user from './user';
 
-const initialState = {
-}
-
-function reducer(state = initialState, action) {
-  switch (action.type) {
-  default:
-    return state;
-  }
-}
-
-export default combineReducers({ reducer });
+export default combineReducers({
+  user
+});

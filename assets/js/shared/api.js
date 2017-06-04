@@ -17,3 +17,7 @@ export function orgCreate(orgName) {
     OrgName: orgName
   })
 }
+
+export function sessionGet(userName) {
+  return post('/i/session/get', {})
+}
