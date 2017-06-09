@@ -14,12 +14,12 @@ type SessionGetApiDto struct {
 }
 
 type SessionCreateApiForm struct {
-	Name string
+	UserName string
 }
 
 type SessionCreateApiDto struct {
-	Id   int64
-	Name string
+	UserId   int64
+	UserName string
 }
 
 func SessionGetApi(w http.ResponseWriter, r *http.Request) {
@@ -31,12 +31,12 @@ func SessionGetApi(w http.ResponseWriter, r *http.Request) {
 	uidf, ok := s.Values["user_id"].(float64)
 	uid := int64(uidf)
 	if !ok {
-		jsonError(w, "session not found", http.StatusNotFound)
+		jsonOk(w, struct{}{})
 		return
 	}
 	u, err := model.UserById(uid)
 	if err == sql.ErrNoRows {
-		jsonError(w, "session not found", http.StatusNotFound)
+		jsonOk(w, struct{}{})
 		return
 	} else if err != nil {
 		InternalServerError(w, r)
@@ -68,18 +68,26 @@ func SessionCreateApi(w http.ResponseWriter, r *http.Request) {
 		jsonError(w, "invalid json", http.StatusBadRequest)
 		return
 	}
-	if len(form.Name) == 0 {
+	if len(form.UserName) == 0 {
 		jsonError(w, "user name is required", http.StatusBadRequest)
 		return
 	}
 
-	uid, err = model.UserCreate(form.Name)
+	uid, err = model.UserCreate(form.UserName)
 	if err != nil {
 		InternalServerError(w, r)
 		return
 	}
-	jsonOk(w, SessionGetApiDto{
-		Id:   uid,
-		Name: form.Name,
+
+	s.Values["user_id"] = uid
+	err = session.DefaultSessionManager().Storage.SessionUpdate(s)
+	if err != nil {
+		InternalServerError(w, r)
+		return
+	}
+
+	jsonOk(w, SessionCreateApiDto{
+		UserId:   uid,
+		UserName: form.UserName,
 	})
 }

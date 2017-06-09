@@ -43,8 +43,11 @@ func TestSessionGetApi_NoSessionUser(t *testing.T) {
 
 	SessionGetApi(rec, req)
 
-	if rec.Code != http.StatusNotFound {
+	if rec.Code != http.StatusOK {
 		t.Fatal("Unexpected status:", rec.Code)
+	}
+	if body := string(rec.Body.Bytes()); body != `{}` {
+		t.Fatal("Unexpected body:", body)
 	}
 }
 
