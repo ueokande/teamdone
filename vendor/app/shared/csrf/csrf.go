@@ -64,6 +64,7 @@ func (h *CSRFHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	cookie = &http.Cookie{
 		Name:    h.CookieName,
+		Path:    "/",
 		Value:   token,
 		Expires: time.Now().Add(time.Duration(h.CookieMaxAge) * time.Second),
 	}
