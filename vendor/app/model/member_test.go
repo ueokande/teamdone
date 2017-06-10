@@ -3,9 +3,16 @@ package model
 import (
 	"app/shared"
 	"database/sql"
-	"reflect"
 	"testing"
 )
+
+func setFromSlice(s []int64) map[int64]bool {
+	set := make(map[int64]bool)
+	for _, e := range s {
+		set[e] = true
+	}
+	return set
+}
 
 func setupMemberTest() ([]int64, []int64, error) {
 	var err error
@@ -30,6 +37,7 @@ func setupMemberTest() ([]int64, []int64, error) {
 			return nil, nil, err
 		}
 	}
+
 	uid := make([]int64, len(users), len(users))
 	for i, name := range users {
 		uid[i], err = UserCreate(name)
@@ -92,7 +100,7 @@ func TestMembersByOrgId(t *testing.T) {
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
-	if !reflect.DeepEqual(member, []int64{uid[0], uid[2]}) {
+	if set := setFromSlice(member); !set[uid[0]] || !set[uid[2]] {
 		t.Fatal("Unexpected member:", member)
 	}
 
@@ -100,7 +108,7 @@ func TestMembersByOrgId(t *testing.T) {
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
-	if !reflect.DeepEqual(member, []int64{uid[1], uid[2]}) {
+	if set := setFromSlice(member); !set[uid[1]] || !set[uid[2]] {
 		t.Fatal("Unexpected member:", member)
 	}
 }
@@ -115,7 +123,7 @@ func TestMembersByUserId(t *testing.T) {
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
-	if !reflect.DeepEqual(member, []int64{oid[0]}) {
+	if set := setFromSlice(member); !set[oid[0]] {
 		t.Fatal("Unexpected member:", member)
 	}
 
@@ -123,7 +131,7 @@ func TestMembersByUserId(t *testing.T) {
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
-	if !reflect.DeepEqual(member, []int64{oid[1]}) {
+	if set := setFromSlice(member); !set[oid[1]] {
 		t.Fatal("Unexpected member:", member)
 	}
 
@@ -131,7 +139,7 @@ func TestMembersByUserId(t *testing.T) {
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
-	if !reflect.DeepEqual(member, []int64{oid[0], oid[1]}) {
+	if set := setFromSlice(member); !set[oid[0]] || !set[oid[1]] {
 		t.Fatal("Unexpected member:", member)
 	}
 }

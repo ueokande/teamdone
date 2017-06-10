@@ -37,7 +37,7 @@ var defaultSessionManager = &Manager{
 }
 
 func generateId() string {
-	b := make([]byte, 32)
+	b := make([]byte, 36)
 	if _, err := io.ReadFull(rand.Reader, b); err != nil {
 		return ""
 	}
@@ -79,16 +79,6 @@ func expiredCookie(name string) *http.Cookie {
 	}
 }
 
-func extentCookie(cookie *http.Cookie, age time.Duration) *http.Cookie {
-	return &http.Cookie{
-		Name:     cookie.Name,
-		Value:    cookie.Value,
-		Path:     cookie.Path,
-		HttpOnly: cookie.HttpOnly,
-		MaxAge:   int(age.Seconds()),
-	}
-}
-
 func (m *Manager) StartSession(w http.ResponseWriter, r *http.Request) (*Session, error) {
 	cookie, err := r.Cookie(m.CookieName)
 	if err == http.ErrNoCookie || cookie.Value == "" {
@@ -107,7 +97,7 @@ func (m *Manager) StartSession(w http.ResponseWriter, r *http.Request) (*Session
 	} else if err != nil {
 		return nil, err
 	}
-	http.SetCookie(w, extentCookie(cookie, m.LifeTime))
+	http.SetCookie(w, newCookie(m.CookieName, cookie.Value, m.LifeTime))
 	return s, nil
 }
 

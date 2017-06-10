@@ -57,13 +57,14 @@ func (h *CSRFHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	default:
 		reqtoken := r.Header.Get(h.HeaderName)
 		if subtle.ConstantTimeCompare([]byte(token), []byte(reqtoken)) != 1 {
-			http.Error(w, "invalid request token", http.StatusForbidden)
+			http.Error(w, `{ "Message": "invalid request token" }`, http.StatusForbidden)
 			return
 		}
 	}
 
 	cookie = &http.Cookie{
 		Name:    h.CookieName,
+		Path:    "/",
 		Value:   token,
 		Expires: time.Now().Add(time.Duration(h.CookieMaxAge) * time.Second),
 	}

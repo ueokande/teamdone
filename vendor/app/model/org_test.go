@@ -1,11 +1,13 @@
 package model
 
 import (
+	"app/shared"
 	"testing"
 )
 
 func TestOrgCreate(t *testing.T) {
-	id, err := OrgCreate("wonderland", "abcd1234")
+	key := shared.RandomKey()
+	id, err := OrgCreate("wonderland", key)
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
@@ -18,19 +20,20 @@ func TestOrgCreate(t *testing.T) {
 	if o.Name != "wonderland" {
 		t.Fatal("Unexpected org name:", o.Name)
 	}
-	if string(o.Key) != "abcd1234" {
+	if string(o.Key) != key {
 		t.Fatal("Unexpected org key:", o.Key)
 	}
 
 }
 
 func TestOrgByKey(t *testing.T) {
-	id, err := OrgCreate("wonderland", "secret-key")
+	key := shared.RandomKey()
+	id, err := OrgCreate("wonderland", key)
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
 
-	o, err := OrgByKey("secret-key")
+	o, err := OrgByKey(key)
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}

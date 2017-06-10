@@ -49,7 +49,7 @@ func setupTasks() ([]int64, error) {
 }
 
 func TestTaskCreate(t *testing.T) {
-	oid, err := OrgCreate("wonderland", "abcdefgh")
+	oid, err := OrgCreate("wonderland", shared.RandomKey())
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
