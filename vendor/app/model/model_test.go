@@ -3,8 +3,10 @@ package model
 import (
 	"app/shared/database"
 	"fmt"
+	"math/rand"
 	"os"
 	"testing"
+	"time"
 )
 
 func initializeDB() error {
@@ -16,26 +18,12 @@ func initializeDB() error {
 	if err != nil {
 		return err
 	}
-	_, err = database.SQL.Exec("DELETE FROM member")
-	if err != nil {
-		return err
-	}
-	_, err = database.SQL.Exec("DELETE FROM task")
-	if err != nil {
-		return err
-	}
-	_, err = database.SQL.Exec("DELETE FROM user")
-	if err != nil {
-		return err
-	}
-	_, err = database.SQL.Exec("DELETE FROM org")
-	if err != nil {
-		return err
-	}
 	return nil
 }
 
 func TestMain(m *testing.M) {
+	rand.Seed(time.Now().UnixNano())
+
 	err := initializeDB()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)

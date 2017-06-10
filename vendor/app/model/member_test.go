@@ -37,6 +37,7 @@ func setupMemberTest() ([]int64, []int64, error) {
 			return nil, nil, err
 		}
 	}
+
 	uid := make([]int64, len(users), len(users))
 	for i, name := range users {
 		uid[i], err = UserCreate(name)

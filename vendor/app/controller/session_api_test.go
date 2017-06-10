@@ -32,7 +32,7 @@ func TestSessionGetApi(t *testing.T) {
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
-	if u.Id != uid || u.Name != "alice" {
+	if u.UserId != uid || u.UserName != "alice" {
 		t.Fatal("Unexpected user:", u)
 	}
 }
