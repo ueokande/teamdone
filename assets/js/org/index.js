@@ -18,11 +18,17 @@ class Org extends Component {
     this.props.dispatch(user.initialize());
   }
 
+  submitUserCreate(userName) {
+    this.props.dispatch(user.submit(userName))
+  }
+
   render() {
     return (
       <div>
         <UserFormDialog
           open={this.props.userFormOpen}
+          userNameError={this.props.userNameError}
+          submit={(name) => this.submitUserCreate(name)}
         />
         <TaskList entries={[
             {
@@ -45,7 +51,8 @@ const store = createStoreWithMiddleware();
 
 Org = connect(({user}) => {
   return {
-    userFormOpen: user.formOpen
+    userFormOpen: user.formOpen,
+    userNameError: user.formNameError
   }
 })(Org)
 

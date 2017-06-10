@@ -21,3 +21,9 @@ export function orgCreate(orgName) {
 export function sessionGet(userName) {
   return post('/i/session/get', {})
 }
+
+export function sessionCreate(userName) {
+  return post('/i/session/create', {
+    UserName: userName
+  })
+}

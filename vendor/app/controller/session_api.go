@@ -9,8 +9,8 @@ import (
 )
 
 type SessionGetApiDto struct {
-	Id   int64
-	Name string
+	UserId   int64
+	UserName string
 }
 
 type SessionCreateApiForm struct {
@@ -44,8 +44,8 @@ func SessionGetApi(w http.ResponseWriter, r *http.Request) {
 	}
 
 	jsonOk(w, SessionGetApiDto{
-		Id:   u.Id,
-		Name: u.Name,
+		UserId:   u.Id,
+		UserName: u.Name,
 	})
 }
 

@@ -24,6 +24,7 @@ export default class UserFormDialog extends Component {
           ref={(e) => { this.userName = e; }}
           hintText="Alice"
           floatingLabelText="Name"
+          errorText={this.props.userNameError}
           name="name"
           fullWidth={true}
         /><br />
@@ -40,6 +41,7 @@ UserFormDialog.defaultProps = {
 
 UserFormDialog.propTypes = {
   open: PropTypes.bool.isRequired,
+  userNameError: PropTypes.string,
   submit: PropTypes.func
 };
 
