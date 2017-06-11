@@ -30,22 +30,12 @@ type Manager struct {
 	LifeTime   time.Duration
 }
 
-var defaultSessionManager = &Manager{
-	CookieName: "session",
-	Storage:    NewMembachedSessionStorage("localhost:11211", 30*24*time.Hour),
-	LifeTime:   30 * 24 * time.Hour,
-}
-
 func generateId() string {
 	b := make([]byte, 36)
 	if _, err := io.ReadFull(rand.Reader, b); err != nil {
 		return ""
 	}
 	return base64.URLEncoding.EncodeToString(b)
-}
-
-func DefaultSessionManager() *Manager {
-	return defaultSessionManager
 }
 
 func newCookie(name string, id string, age time.Duration) *http.Cookie {

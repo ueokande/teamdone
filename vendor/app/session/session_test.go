@@ -7,6 +7,12 @@ import (
 	"time"
 )
 
+var manager = &Manager{
+	CookieName: "session",
+	Storage:    NewMembachedSessionStorage("localhost:11211", 30*24*time.Hour),
+	LifeTime:   30 * 24 * time.Hour,
+}
+
 func setupSessionTest() error {
 	storage := NewMembachedSessionStorage("localhost:11211", time.Minute).(*MemcacheSessionStorage)
 	err := storage.set(&Session{
@@ -18,13 +24,12 @@ func setupSessionTest() error {
 	if err != nil {
 		return err
 	}
-	defaultSessionManager.Storage = storage
 	return nil
 }
 
 func sessionCookie(resp *http.Response) *http.Cookie {
 	for _, cookie := range resp.Cookies() {
-		if cookie.Name == defaultSessionManager.CookieName {
+		if cookie.Name == manager.CookieName {
 			return cookie
 		}
 	}
@@ -38,10 +43,10 @@ func TestStartSession_StoredSession(t *testing.T) {
 	}
 
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
-	req.Header.Add("Cookie", defaultSessionManager.CookieName+"=current-session")
+	req.Header.Add("Cookie", manager.CookieName+"=current-session")
 	resp := httptest.ResponseRecorder{}
 
-	s, err := DefaultSessionManager().StartSession(&resp, req)
+	s, err := manager.StartSession(&resp, req)
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
@@ -60,7 +65,7 @@ func TestStartSession_NoneCookie(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	resp := httptest.ResponseRecorder{}
 
-	s, err := DefaultSessionManager().StartSession(&resp, req)
+	s, err := manager.StartSession(&resp, req)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -72,10 +77,10 @@ func TestStartSession_NoneCookie(t *testing.T) {
 
 func TestStartSession_EmptyCookie(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
-	req.Header.Add("Cookie", defaultSessionManager.CookieName+"=")
+	req.Header.Add("Cookie", manager.CookieName+"=")
 	resp := httptest.ResponseRecorder{}
 
-	s, err := DefaultSessionManager().StartSession(&resp, req)
+	s, err := manager.StartSession(&resp, req)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -87,10 +92,10 @@ func TestStartSession_EmptyCookie(t *testing.T) {
 
 func TestStartSession_UnknownSession(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
-	req.Header.Add("Cookie", defaultSessionManager.CookieName+"=gone-session")
+	req.Header.Add("Cookie", manager.CookieName+"=gone-session")
 	resp := httptest.ResponseRecorder{}
 
-	s, err := DefaultSessionManager().StartSession(&resp, req)
+	s, err := manager.StartSession(&resp, req)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -104,9 +109,9 @@ func TestStartSession_UnknownSession(t *testing.T) {
 
 func TestDestroySession(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
-	req.Header.Add("Cookie", defaultSessionManager.CookieName+"=current-session")
+	req.Header.Add("Cookie", manager.CookieName+"=current-session")
 	resp := httptest.ResponseRecorder{}
-	err := DefaultSessionManager().DestroySession(&resp, req)
+	err := manager.DestroySession(&resp, req)
 	if err != nil {
 		t.Fatal(err)
 	}

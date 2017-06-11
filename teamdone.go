@@ -4,6 +4,7 @@ import (
 	"app/controller"
 	"app/render"
 	"app/route"
+	"app/session"
 	"app/shared/csrf"
 	"app/shared/database"
 	"html/template"
@@ -32,7 +33,12 @@ func run() int {
 	r := &render.TemplateRenderer{
 		Template: template.Must(template.ParseGlob("template/*.html")),
 	}
-	cc := controller.NewContext(db, r)
+	sm := &session.Manager{
+		CookieName: "session",
+		Storage:    session.NewMembachedSessionStorage("localhost:11211", 30*24*time.Hour),
+		LifeTime:   30 * 24 * time.Hour,
+	}
+	cc := controller.NewContext(db, sm, r)
 	web := route.WebHandler{C: cc}
 	api := route.ApiHandler{C: cc}
 

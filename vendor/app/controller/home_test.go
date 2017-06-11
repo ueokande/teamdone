@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"app/session"
 	"app/shared"
 	"io/ioutil"
 	"net/http"
@@ -19,12 +18,12 @@ func cookieByName(r *http.Response, name string) *http.Cookie {
 }
 
 func testLogin(r *http.Request, uid int64) error {
-	s, err := session.DefaultSessionManager().StartSession(&httptest.ResponseRecorder{}, r)
+	s, err := context.s.StartSession(&httptest.ResponseRecorder{}, r)
 	if err != nil {
 		return err
 	}
 	s.Values["user_id"] = uid
-	err = session.DefaultSessionManager().Storage.SessionUpdate(s)
+	err = context.s.Storage.SessionUpdate(s)
 	if err != nil {
 		return err
 	}

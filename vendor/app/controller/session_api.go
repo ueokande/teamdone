@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"app/session"
 	"database/sql"
 	"encoding/json"
 	"net/http"
@@ -22,7 +21,7 @@ type SessionCreateApiDto struct {
 }
 
 func (c *Context) SessionGetApi(w http.ResponseWriter, r *http.Request) {
-	s, err := session.DefaultSessionManager().StartSession(w, r)
+	s, err := c.s.StartSession(w, r)
 	if err != nil {
 		InternalServerError(w, r)
 		return
@@ -49,7 +48,7 @@ func (c *Context) SessionGetApi(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *Context) SessionCreateApi(w http.ResponseWriter, r *http.Request) {
-	s, err := session.DefaultSessionManager().StartSession(w, r)
+	s, err := c.s.StartSession(w, r)
 	if err != nil {
 		InternalServerError(w, r)
 		return
@@ -79,7 +78,7 @@ func (c *Context) SessionCreateApi(w http.ResponseWriter, r *http.Request) {
 	}
 
 	s.Values["user_id"] = uid
-	err = session.DefaultSessionManager().Storage.SessionUpdate(s)
+	err = c.s.Storage.SessionUpdate(s)
 	if err != nil {
 		InternalServerError(w, r)
 		return

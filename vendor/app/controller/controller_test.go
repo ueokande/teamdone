@@ -2,6 +2,7 @@ package controller
 
 import (
 	"app/model"
+	"app/session"
 	"app/shared/database"
 	"database/sql"
 	"fmt"
@@ -40,6 +41,11 @@ func TestMain(m *testing.M) {
 
 	context = &Context{
 		m: &model.Context{SQL: db},
+		s: &session.Manager{
+			CookieName: "session",
+			Storage:    session.NewMembachedSessionStorage("localhost:11211", 30*24*time.Hour),
+			LifeTime:   30 * 24 * time.Hour,
+		},
 		r: &MockRender{},
 	}
 

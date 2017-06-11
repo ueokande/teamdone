@@ -1,13 +1,12 @@
 package controller
 
 import (
-	"app/session"
 	"database/sql"
 	"net/http"
 )
 
 func (c *Context) HomeGet(w http.ResponseWriter, r *http.Request) {
-	s, err := session.DefaultSessionManager().StartSession(w, r)
+	s, err := c.s.StartSession(w, r)
 	if err != nil {
 		InternalServerError(w, r)
 		return
