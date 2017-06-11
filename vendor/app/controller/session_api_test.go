@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"app/model"
 	"bytes"
 	"encoding/json"
 	"net/http"
@@ -13,7 +12,7 @@ func TestSessionGetApi(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	rec := httptest.NewRecorder()
 
-	uid, err := model.UserCreate("alice")
+	uid, err := context.m.UserCreate("alice")
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
@@ -22,7 +21,7 @@ func TestSessionGetApi(t *testing.T) {
 		t.Fatal("Unexpected error:", err)
 	}
 
-	SessionGetApi(rec, req)
+	context.SessionGetApi(rec, req)
 
 	if rec.Code != http.StatusOK {
 		t.Fatal("Unexpected status:", rec.Code)
@@ -41,7 +40,7 @@ func TestSessionGetApi_NoSessionUser(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	rec := httptest.NewRecorder()
 
-	SessionGetApi(rec, req)
+	context.SessionGetApi(rec, req)
 
 	if rec.Code != http.StatusOK {
 		t.Fatal("Unexpected status:", rec.Code)
@@ -66,7 +65,7 @@ func TestSessionCreateApiTest(t *testing.T) {
 		req := httptest.NewRequest(http.MethodGet, "/i/session/create", bytes.NewReader([]byte(c.req)))
 		rec := httptest.NewRecorder()
 
-		SessionCreateApi(rec, req)
+		context.SessionCreateApi(rec, req)
 
 		if rec.Code != http.StatusOK {
 			continue

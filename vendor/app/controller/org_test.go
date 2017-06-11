@@ -10,7 +10,7 @@ func TestOrgGet(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	rec := httptest.NewRecorder()
 
-	OrgGet("my-key", rec, req)
+	context.OrgGet("my-key", rec, req)
 
 	if code := rec.Code; code != http.StatusOK {
 		t.Fatal("Unexpected staus code:", code)

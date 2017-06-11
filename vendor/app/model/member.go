@@ -1,24 +1,22 @@
 package model
 
-import "app/shared/database"
-
-func MemberExists(oid, uid int64) error {
-	row := database.SQL.QueryRow(
+func (c *Context) MemberExists(oid, uid int64) error {
+	row := c.SQL.QueryRow(
 		"SELECT 1 FROM member WHERE org_id = ? AND user_id = ? limit 1",
 		oid, uid)
 	var result int64
 	return row.Scan(&result)
 }
 
-func MemberCreate(oid, uid int64) error {
-	_, err := database.SQL.Exec(
+func (c *Context) MemberCreate(oid, uid int64) error {
+	_, err := c.SQL.Exec(
 		"INSERT INTO member (org_id, user_id) VALUES (?, ?)",
 		oid, uid)
 	return err
 }
 
-func MembersByUserId(uid int64) ([]int64, error) {
-	rows, err := database.SQL.Query(
+func (c *Context) MembersByUserId(uid int64) ([]int64, error) {
+	rows, err := c.SQL.Query(
 		"SELECT org_id FROM member WHERE user_id = ?",
 		uid)
 	if err != nil {
@@ -38,8 +36,8 @@ func MembersByUserId(uid int64) ([]int64, error) {
 	return oids, nil
 }
 
-func MembersByOrgId(oid int64) ([]int64, error) {
-	rows, err := database.SQL.Query(
+func (c *Context) MembersByOrgId(oid int64) ([]int64, error) {
+	rows, err := c.SQL.Query(
 		"SELECT user_id FROM member WHERE org_id = ?",
 		oid)
 	if err != nil {

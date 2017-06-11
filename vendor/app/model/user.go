@@ -1,14 +1,12 @@
 package model
 
-import "app/shared/database"
-
 type User struct {
 	Id   int64
 	Name string
 }
 
-func UserCreate(name string) (int64, error) {
-	result, err := database.SQL.Exec(
+func (c *Context) UserCreate(name string) (int64, error) {
+	result, err := c.SQL.Exec(
 		"INSERT INTO user (name) VALUES (?)",
 		name)
 	if err != nil {
@@ -17,8 +15,8 @@ func UserCreate(name string) (int64, error) {
 	return result.LastInsertId()
 }
 
-func UserById(id int64) (*User, error) {
-	row := database.SQL.QueryRow(
+func (c *Context) UserById(id int64) (*User, error) {
+	row := c.SQL.QueryRow(
 		"SELECT id, name FROM user WHERE id = ? LIMIT 1",
 		id)
 

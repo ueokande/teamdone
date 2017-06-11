@@ -5,17 +5,23 @@ import (
 	"net/http"
 )
 
-type ApiHandler struct{}
+func Api(c *controller.Context) http.Handler {
+	return &apiHandler{c: c}
+}
 
-func (h ApiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+type apiHandler struct {
+	c *controller.Context
+}
+
+func (h apiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch {
 	case r.Method == http.MethodPost && r.URL.Path == "/org/create":
-		controller.OrgCreateApi(w, r)
+		h.c.OrgCreateApi(w, r)
 	case r.Method == http.MethodPost && r.URL.Path == "/session/get":
-		controller.SessionGetApi(w, r)
+		h.c.SessionGetApi(w, r)
 	case r.Method == http.MethodPost && r.URL.Path == "/session/create":
-		controller.SessionCreateApi(w, r)
+		h.c.SessionCreateApi(w, r)
 	default:
-		http.NotFound(w, r)
+		h.c.NotFoundApi(w, r)
 	}
 }

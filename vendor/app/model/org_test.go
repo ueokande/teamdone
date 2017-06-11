@@ -7,12 +7,12 @@ import (
 
 func TestOrgCreate(t *testing.T) {
 	key := shared.RandomKey()
-	id, err := OrgCreate("wonderland", key)
+	id, err := context.OrgCreate("wonderland", key)
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
 
-	o, err := OrgById(id)
+	o, err := context.OrgById(id)
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
@@ -28,12 +28,12 @@ func TestOrgCreate(t *testing.T) {
 
 func TestOrgByKey(t *testing.T) {
 	key := shared.RandomKey()
-	id, err := OrgCreate("wonderland", key)
+	id, err := context.OrgCreate("wonderland", key)
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
 
-	o, err := OrgByKey(key)
+	o, err := context.OrgByKey(key)
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
@@ -49,7 +49,7 @@ func TestOrgsByUserId(t *testing.T) {
 		t.Fatal("Unexpected error:", err)
 	}
 
-	orgs, err := OrgsByUserId(uid[0])
+	orgs, err := context.OrgsByUserId(uid[0])
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
@@ -57,7 +57,7 @@ func TestOrgsByUserId(t *testing.T) {
 		t.Fatal("Unexpected orgs:", orgs)
 	}
 
-	orgs, err = OrgsByUserId(uid[2])
+	orgs, err = context.OrgsByUserId(uid[2])
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}

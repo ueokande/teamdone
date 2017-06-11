@@ -11,7 +11,6 @@ import (
 )
 
 var UnknownAdapter = errors.New("unknown adapter")
-var SQL *sql.DB
 
 type Database interface {
 	DSN() string
@@ -56,18 +55,16 @@ func LoadConfig(path string) (Database, error) {
 	return nil, UnknownAdapter
 }
 
-func Connect(db Database) error {
-	var err error
-
-	SQL, err = sql.Open("mysql", db.DSN())
+func Connect(conf Database) (*sql.DB, error) {
+	db, err := sql.Open("mysql", conf.DSN())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	err = SQL.Ping()
+	err = db.Ping()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return db, nil
 }

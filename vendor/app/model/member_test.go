@@ -32,7 +32,7 @@ func setupMemberTest() ([]int64, []int64, error) {
 
 	oid := make([]int64, len(orgs), len(orgs))
 	for i, name := range orgs {
-		oid[i], err = OrgCreate(name, shared.RandomKey())
+		oid[i], err = context.OrgCreate(name, shared.RandomKey())
 		if err != nil {
 			return nil, nil, err
 		}
@@ -40,7 +40,7 @@ func setupMemberTest() ([]int64, []int64, error) {
 
 	uid := make([]int64, len(users), len(users))
 	for i, name := range users {
-		uid[i], err = UserCreate(name)
+		uid[i], err = context.UserCreate(name)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -48,7 +48,7 @@ func setupMemberTest() ([]int64, []int64, error) {
 
 	for o, mem := range members {
 		for _, u := range mem {
-			err = MemberCreate(oid[o], uid[u])
+			err = context.MemberCreate(oid[o], uid[u])
 			if err != nil {
 				return nil, nil, err
 			}
@@ -63,27 +63,27 @@ func TestMemberExists(t *testing.T) {
 		t.Fatal("Unexpected error:", err)
 	}
 
-	err = MemberExists(oid[0], uid[0])
+	err = context.MemberExists(oid[0], uid[0])
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
-	err = MemberExists(oid[0], uid[2])
+	err = context.MemberExists(oid[0], uid[2])
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
-	err = MemberExists(oid[1], uid[1])
+	err = context.MemberExists(oid[1], uid[1])
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
-	err = MemberExists(oid[1], uid[2])
+	err = context.MemberExists(oid[1], uid[2])
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
-	err = MemberExists(oid[0], uid[1])
+	err = context.MemberExists(oid[0], uid[1])
 	if err != sql.ErrNoRows {
 		t.Fatal("Unexpected error:", err)
 	}
-	err = MemberExists(oid[1], uid[0])
+	err = context.MemberExists(oid[1], uid[0])
 	if err != sql.ErrNoRows {
 		t.Fatal("Unexpected error:", err)
 	}
@@ -96,7 +96,7 @@ func TestMembersByOrgId(t *testing.T) {
 		t.Fatal("Unexpected error:", err)
 	}
 
-	member, err := MembersByOrgId(oid[0])
+	member, err := context.MembersByOrgId(oid[0])
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
@@ -104,7 +104,7 @@ func TestMembersByOrgId(t *testing.T) {
 		t.Fatal("Unexpected member:", member)
 	}
 
-	member, err = MembersByOrgId(oid[1])
+	member, err = context.MembersByOrgId(oid[1])
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
@@ -119,7 +119,7 @@ func TestMembersByUserId(t *testing.T) {
 		t.Fatal("Unexpected error:", err)
 	}
 
-	member, err := MembersByUserId(uid[0])
+	member, err := context.MembersByUserId(uid[0])
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
@@ -127,7 +127,7 @@ func TestMembersByUserId(t *testing.T) {
 		t.Fatal("Unexpected member:", member)
 	}
 
-	member, err = MembersByUserId(uid[1])
+	member, err = context.MembersByUserId(uid[1])
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
@@ -135,7 +135,7 @@ func TestMembersByUserId(t *testing.T) {
 		t.Fatal("Unexpected member:", member)
 	}
 
-	member, err = MembersByUserId(uid[2])
+	member, err = context.MembersByUserId(uid[2])
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}

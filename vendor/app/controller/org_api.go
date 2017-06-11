@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"app/model"
 	"app/shared"
 	"encoding/json"
 	"net/http"
@@ -16,7 +15,7 @@ type OrgCreateApiResponse struct {
 	Key     string
 }
 
-func OrgCreateApi(w http.ResponseWriter, r *http.Request) {
+func (c *Context) OrgCreateApi(w http.ResponseWriter, r *http.Request) {
 	dec := json.NewDecoder(r.Body)
 
 	var form OrgCreateApiForm
@@ -30,7 +29,7 @@ func OrgCreateApi(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	key := shared.RandomKey()
-	_, err = model.OrgCreate(form.OrgName, key)
+	_, err = c.m.OrgCreate(form.OrgName, key)
 	if err != nil {
 		jsonError(w,
 			http.StatusText(http.StatusInternalServerError),

@@ -24,7 +24,7 @@ func TestOrgCreateApi(t *testing.T) {
 		req := httptest.NewRequest(http.MethodPost, "/", bytes.NewReader([]byte(c.req)))
 		rec := httptest.NewRecorder()
 
-		OrgCreateApi(rec, req)
+		context.OrgCreateApi(rec, req)
 
 		if code := rec.Code; code != c.code {
 			t.Fatal("Unexpected staus code:", code)

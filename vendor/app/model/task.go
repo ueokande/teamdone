@@ -1,7 +1,6 @@
 package model
 
 import (
-	"app/shared/database"
 	"time"
 )
 
@@ -16,8 +15,8 @@ type Task struct {
 	UpdatedAt   time.Time
 }
 
-func TaskCreate(oid int64, summary string, description string, due *time.Time) (int64, error) {
-	result, err := database.SQL.Exec(
+func (c *Context) TaskCreate(oid int64, summary string, description string, due *time.Time) (int64, error) {
+	result, err := c.SQL.Exec(
 		"INSERT INTO task (org_id, summary, description, due, done, created_at, updated_at) VALUES (?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_TIME)",
 		oid, summary, description, due, false)
 	if err != nil {
@@ -26,8 +25,8 @@ func TaskCreate(oid int64, summary string, description string, due *time.Time) (
 	return result.LastInsertId()
 }
 
-func TaskById(id int64) (*Task, error) {
-	row := database.SQL.QueryRow(
+func (c *Context) TaskById(id int64) (*Task, error) {
+	row := c.SQL.QueryRow(
 		"SELECT id, org_id, summary, description, due, done, created_at, updated_at FROM task WHERE id = ? LIMIT 1",
 		id)
 
@@ -40,8 +39,8 @@ func TaskById(id int64) (*Task, error) {
 	return &t, err
 }
 
-func TaskByOrgId(oid int64) ([]*Task, error) {
-	rows, err := database.SQL.Query(
+func (c *Context) TaskByOrgId(oid int64) ([]*Task, error) {
+	rows, err := c.SQL.Query(
 		"SELECT id, org_id, summary, description, due, done, created_at, updated_at FROM task WHERE org_id = ?",
 		oid)
 	if err != nil {

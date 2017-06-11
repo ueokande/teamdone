@@ -1,8 +1,6 @@
 package controller
 
 import (
-	"app/model"
-	"app/session"
 	"app/shared"
 	"io/ioutil"
 	"net/http"
@@ -20,12 +18,12 @@ func cookieByName(r *http.Response, name string) *http.Cookie {
 }
 
 func testLogin(r *http.Request, uid int64) error {
-	s, err := session.DefaultSessionManager().StartSession(&httptest.ResponseRecorder{}, r)
+	s, err := context.s.StartSession(&httptest.ResponseRecorder{}, r)
 	if err != nil {
 		return err
 	}
 	s.Values["user_id"] = uid
-	err = session.DefaultSessionManager().Storage.SessionUpdate(s)
+	err = context.s.Storage.SessionUpdate(s)
 	if err != nil {
 		return err
 	}
@@ -41,7 +39,7 @@ func TestHomeGet_NewUser(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	rec := httptest.NewRecorder()
 
-	HomeGet(rec, req)
+	context.HomeGet(rec, req)
 	resp := rec.Result()
 
 	if resp.StatusCode != http.StatusOK {
@@ -65,7 +63,7 @@ func TestHomeGet_OneOrgUser(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	rec := httptest.NewRecorder()
 
-	uid, err := model.UserCreate("alice")
+	uid, err := context.m.UserCreate("alice")
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
@@ -75,17 +73,17 @@ func TestHomeGet_OneOrgUser(t *testing.T) {
 	}
 
 	key := shared.RandomKey()
-	oid, err := model.OrgCreate("wanderland", key)
+	oid, err := context.m.OrgCreate("wanderland", key)
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
 
-	err = model.MemberCreate(oid, uid)
+	err = context.m.MemberCreate(oid, uid)
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
 
-	HomeGet(rec, req)
+	context.HomeGet(rec, req)
 	resp := rec.Result()
 
 	if resp.StatusCode != http.StatusFound && resp.Header.Get("Location") != "/"+key {
@@ -97,7 +95,7 @@ func TestHomeGet_TwoOrgUser(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	rec := httptest.NewRecorder()
 
-	uid, err := model.UserCreate("alice")
+	uid, err := context.m.UserCreate("alice")
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
@@ -107,18 +105,18 @@ func TestHomeGet_TwoOrgUser(t *testing.T) {
 	}
 
 	for _, name := range []string{"wonderland", "glass"} {
-		oid, err := model.OrgCreate(name, shared.RandomKey())
+		oid, err := context.m.OrgCreate(name, shared.RandomKey())
 		if err != nil {
 			t.Fatal("Unexpected error:", err)
 		}
 
-		err = model.MemberCreate(oid, uid)
+		err = context.m.MemberCreate(oid, uid)
 		if err != nil {
 			t.Fatal("Unexpected error:", err)
 		}
 	}
 
-	HomeGet(rec, req)
+	context.HomeGet(rec, req)
 	resp := rec.Result()
 
 	if resp.StatusCode != http.StatusOK {

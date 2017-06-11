@@ -1,8 +1,10 @@
 package main
 
 import (
+	"app/controller"
 	"app/render"
 	"app/route"
+	"app/session"
 	"app/shared/csrf"
 	"app/shared/database"
 	"html/template"
@@ -18,21 +20,29 @@ func run() int {
 
 	logger := log.New(os.Stderr, "logger: ", log.Lshortfile)
 
-	db, err := database.LoadConfig("config/development.json")
+	conf, err := database.LoadConfig("config/development.json")
 	if err != nil {
 		logger.Print("Failed to load db config:", err)
 	}
-	err = database.Connect(db)
+	db, err := database.Connect(conf)
 	if err != nil {
 		logger.Print("Failed to connect to db:", err)
 		return 1
 	}
 
-	render.InitTemplateRenderer(template.Must(template.ParseGlob("template/*.html")))
+	r := &render.TemplateRenderer{
+		Template: template.Must(template.ParseGlob("template/*.html")),
+	}
+	sm := &session.Manager{
+		CookieName: "session",
+		Storage:    session.NewMembachedSessionStorage("localhost:11211", 30*24*time.Hour),
+		LifeTime:   30 * 24 * time.Hour,
+	}
+	cc := controller.NewContext(db, sm, r)
 
 	mux := http.NewServeMux()
-	mux.Handle("/", csrf.DefaultCSRF(route.WebHandler{}))
-	mux.Handle("/i/", csrf.DefaultCSRF(http.StripPrefix("/i", route.ApiHandler{})))
+	mux.Handle("/", csrf.DefaultCSRF(route.Web(cc)))
+	mux.Handle("/i/", csrf.DefaultCSRF(http.StripPrefix("/i", route.Api(cc))))
 	mux.HandleFunc("/assets/index.js", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "build/index.js")
 	})

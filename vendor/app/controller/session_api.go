@@ -1,8 +1,6 @@
 package controller
 
 import (
-	"app/model"
-	"app/session"
 	"database/sql"
 	"encoding/json"
 	"net/http"
@@ -22,8 +20,8 @@ type SessionCreateApiDto struct {
 	UserName string
 }
 
-func SessionGetApi(w http.ResponseWriter, r *http.Request) {
-	s, err := session.DefaultSessionManager().StartSession(w, r)
+func (c *Context) SessionGetApi(w http.ResponseWriter, r *http.Request) {
+	s, err := c.s.StartSession(w, r)
 	if err != nil {
 		InternalServerError(w, r)
 		return
@@ -34,7 +32,7 @@ func SessionGetApi(w http.ResponseWriter, r *http.Request) {
 		jsonOk(w, struct{}{})
 		return
 	}
-	u, err := model.UserById(uid)
+	u, err := c.m.UserById(uid)
 	if err == sql.ErrNoRows {
 		jsonOk(w, struct{}{})
 		return
@@ -49,8 +47,8 @@ func SessionGetApi(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func SessionCreateApi(w http.ResponseWriter, r *http.Request) {
-	s, err := session.DefaultSessionManager().StartSession(w, r)
+func (c *Context) SessionCreateApi(w http.ResponseWriter, r *http.Request) {
+	s, err := c.s.StartSession(w, r)
 	if err != nil {
 		InternalServerError(w, r)
 		return
@@ -73,14 +71,14 @@ func SessionCreateApi(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	uid, err = model.UserCreate(form.UserName)
+	uid, err = c.m.UserCreate(form.UserName)
 	if err != nil {
 		InternalServerError(w, r)
 		return
 	}
 
 	s.Values["user_id"] = uid
-	err = session.DefaultSessionManager().Storage.SessionUpdate(s)
+	err = c.s.Storage.SessionUpdate(s)
 	if err != nil {
 		InternalServerError(w, r)
 		return
