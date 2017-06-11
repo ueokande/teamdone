@@ -1,15 +1,13 @@
 package model
 
-import "app/shared/database"
-
 type Org struct {
 	Id   int64
 	Name string
 	Key  string
 }
 
-func OrgCreate(name string, key string) (int64, error) {
-	result, err := database.SQL.Exec(
+func (c *Context) OrgCreate(name string, key string) (int64, error) {
+	result, err := c.SQL.Exec(
 		"INSERT INTO org (name, `key`) VALUES (?, ?)",
 		name, key)
 	if err != nil {
@@ -18,8 +16,8 @@ func OrgCreate(name string, key string) (int64, error) {
 	return result.LastInsertId()
 }
 
-func OrgById(id int64) (*Org, error) {
-	row := database.SQL.QueryRow(
+func (c *Context) OrgById(id int64) (*Org, error) {
+	row := c.SQL.QueryRow(
 		"SELECT id, name, `key` FROM org WHERE id = ? LIMIT 1",
 		id)
 
@@ -32,8 +30,8 @@ func OrgById(id int64) (*Org, error) {
 	return &o, err
 }
 
-func OrgByKey(key string) (*Org, error) {
-	row := database.SQL.QueryRow(
+func (c *Context) OrgByKey(key string) (*Org, error) {
+	row := c.SQL.QueryRow(
 		"SELECT id, name, `key` FROM org WHERE `key` = ? LIMIT 1",
 		key)
 
@@ -46,8 +44,8 @@ func OrgByKey(key string) (*Org, error) {
 	return &o, err
 }
 
-func OrgsByUserId(uid int64) ([]*Org, error) {
-	rows, err := database.SQL.Query(
+func (c *Context) OrgsByUserId(uid int64) ([]*Org, error) {
+	rows, err := c.SQL.Query(
 		"SELECT id, name, `key` from org INNSER JOIN member ON id = member.org_id WHERE user_id = ?",
 		uid)
 	if err != nil {

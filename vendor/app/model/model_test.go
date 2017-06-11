@@ -9,15 +9,18 @@ import (
 	"time"
 )
 
+var context *Context
+
 func initializeDB() error {
-	db, err := database.LoadConfig("../../../config/test.json")
+	conf, err := database.LoadConfig("../../../config/test.json")
 	if err != nil {
 		return err
 	}
-	err = database.Connect(db)
+	db, err := database.Connect(conf)
 	if err != nil {
 		return err
 	}
+	context = &Context{SQL: db}
 	return nil
 }
 

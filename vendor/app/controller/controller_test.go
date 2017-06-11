@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"app/model"
 	"app/render"
 	"app/shared/database"
 	"fmt"
@@ -13,19 +14,24 @@ import (
 
 type MockRender struct{}
 
+var context *Context
+
 func (t *MockRender) Render(w io.Writer, name string, data interface{}) error {
 	fmt.Fprintf(w, name)
 	return nil
 }
 
 func initializeDB() error {
-	db, err := database.LoadConfig("../../../config/test.json")
+	conf, err := database.LoadConfig("../../../config/test.json")
 	if err != nil {
 		return err
 	}
-	err = database.Connect(db)
+	db, err := database.Connect(conf)
 	if err != nil {
 		return err
+	}
+	context = &Context{
+		m: &model.Context{SQL: db},
 	}
 	return nil
 }

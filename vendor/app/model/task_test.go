@@ -28,19 +28,19 @@ func setupTasks() ([]int64, error) {
 
 	oid := make([]int64, len(orgs), len(orgs))
 	for i, name := range orgs {
-		oid[i], err = OrgCreate(name, shared.RandomKey())
+		oid[i], err = context.OrgCreate(name, shared.RandomKey())
 		if err != nil {
 			return nil, err
 		}
 	}
 	for _, t := range tasks1 {
-		_, err = TaskCreate(oid[0], t.summary, "", t.due)
+		_, err = context.TaskCreate(oid[0], t.summary, "", t.due)
 		if err != nil {
 			return nil, err
 		}
 	}
 	for _, summary := range tasks2 {
-		_, err = TaskCreate(oid[1], summary, "", nil)
+		_, err = context.TaskCreate(oid[1], summary, "", nil)
 		if err != nil {
 			return nil, err
 		}
@@ -49,18 +49,18 @@ func setupTasks() ([]int64, error) {
 }
 
 func TestTaskCreate(t *testing.T) {
-	oid, err := OrgCreate("wonderland", shared.RandomKey())
+	oid, err := context.OrgCreate("wonderland", shared.RandomKey())
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
 
 	due := time.Date(1865, time.November, 26, 23, 55, 66, 99, time.UTC)
-	id, err := TaskCreate(oid, "eat a cake", "written EAT ME", &due)
+	id, err := context.TaskCreate(oid, "eat a cake", "written EAT ME", &due)
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
 
-	task, err := TaskById(id)
+	task, err := context.TaskById(id)
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
@@ -78,7 +78,7 @@ func TestTaskByOrgId(t *testing.T) {
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
-	tasks, err := TaskByOrgId(oid[0])
+	tasks, err := context.TaskByOrgId(oid[0])
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}

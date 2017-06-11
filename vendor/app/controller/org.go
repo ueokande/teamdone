@@ -5,6 +5,6 @@ import (
 	"net/http"
 )
 
-func OrgGet(key string, w http.ResponseWriter, r *http.Request) {
+func (c *Context) OrgGet(key string, w http.ResponseWriter, r *http.Request) {
 	render.Render(w, "org.html", nil)
 }

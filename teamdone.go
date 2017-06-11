@@ -1,6 +1,7 @@
 package main
 
 import (
+	"app/controller"
 	"app/render"
 	"app/route"
 	"app/shared/csrf"
@@ -18,21 +19,25 @@ func run() int {
 
 	logger := log.New(os.Stderr, "logger: ", log.Lshortfile)
 
-	db, err := database.LoadConfig("config/development.json")
+	conf, err := database.LoadConfig("config/development.json")
 	if err != nil {
 		logger.Print("Failed to load db config:", err)
 	}
-	err = database.Connect(db)
+	db, err := database.Connect(conf)
 	if err != nil {
 		logger.Print("Failed to connect to db:", err)
 		return 1
 	}
 
+	cc := controller.NewContext(db)
+	web := route.WebHandler{C: cc}
+	api := route.ApiHandler{C: cc}
+
 	render.InitTemplateRenderer(template.Must(template.ParseGlob("template/*.html")))
 
 	mux := http.NewServeMux()
-	mux.Handle("/", csrf.DefaultCSRF(route.WebHandler{}))
-	mux.Handle("/i/", csrf.DefaultCSRF(http.StripPrefix("/i", route.ApiHandler{})))
+	mux.Handle("/", csrf.DefaultCSRF(web))
+	mux.Handle("/i/", csrf.DefaultCSRF(http.StripPrefix("/i", api)))
 	mux.HandleFunc("/assets/index.js", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "build/index.js")
 	})

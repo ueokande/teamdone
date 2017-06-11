@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"app/model"
 	"app/session"
 	"database/sql"
 	"encoding/json"
@@ -22,7 +21,7 @@ type SessionCreateApiDto struct {
 	UserName string
 }
 
-func SessionGetApi(w http.ResponseWriter, r *http.Request) {
+func (c *Context) SessionGetApi(w http.ResponseWriter, r *http.Request) {
 	s, err := session.DefaultSessionManager().StartSession(w, r)
 	if err != nil {
 		InternalServerError(w, r)
@@ -34,7 +33,7 @@ func SessionGetApi(w http.ResponseWriter, r *http.Request) {
 		jsonOk(w, struct{}{})
 		return
 	}
-	u, err := model.UserById(uid)
+	u, err := c.m.UserById(uid)
 	if err == sql.ErrNoRows {
 		jsonOk(w, struct{}{})
 		return
@@ -49,7 +48,7 @@ func SessionGetApi(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func SessionCreateApi(w http.ResponseWriter, r *http.Request) {
+func (c *Context) SessionCreateApi(w http.ResponseWriter, r *http.Request) {
 	s, err := session.DefaultSessionManager().StartSession(w, r)
 	if err != nil {
 		InternalServerError(w, r)
@@ -73,7 +72,7 @@ func SessionCreateApi(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	uid, err = model.UserCreate(form.UserName)
+	uid, err = c.m.UserCreate(form.UserName)
 	if err != nil {
 		InternalServerError(w, r)
 		return

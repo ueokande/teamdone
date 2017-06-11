@@ -5,12 +5,12 @@ import (
 )
 
 func TestUserCreate(t *testing.T) {
-	id, err := UserCreate("alice")
+	id, err := context.UserCreate("alice")
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}
 
-	u, err := UserById(id)
+	u, err := context.UserById(id)
 	if err != nil {
 		t.Fatal("Unexpected error:", err)
 	}

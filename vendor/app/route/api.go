@@ -5,16 +5,18 @@ import (
 	"net/http"
 )
 
-type ApiHandler struct{}
+type ApiHandler struct {
+	C *controller.Context
+}
 
 func (h ApiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch {
 	case r.Method == http.MethodPost && r.URL.Path == "/org/create":
-		controller.OrgCreateApi(w, r)
+		h.C.OrgCreateApi(w, r)
 	case r.Method == http.MethodPost && r.URL.Path == "/session/get":
-		controller.SessionGetApi(w, r)
+		h.C.SessionGetApi(w, r)
 	case r.Method == http.MethodPost && r.URL.Path == "/session/create":
-		controller.SessionCreateApi(w, r)
+		h.C.SessionCreateApi(w, r)
 	default:
 		http.NotFound(w, r)
 	}

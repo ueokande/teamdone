@@ -1,14 +1,13 @@
 package controller
 
 import (
-	"app/model"
 	"app/render"
 	"app/session"
 	"database/sql"
 	"net/http"
 )
 
-func HomeGet(w http.ResponseWriter, r *http.Request) {
+func (c *Context) HomeGet(w http.ResponseWriter, r *http.Request) {
 	s, err := session.DefaultSessionManager().StartSession(w, r)
 	if err != nil {
 		InternalServerError(w, r)
@@ -17,13 +16,13 @@ func HomeGet(w http.ResponseWriter, r *http.Request) {
 	uidf, ok := s.Values["user_id"].(float64)
 	uid := int64(uidf)
 	if !ok {
-		LandingGet(w, r)
+		c.LandingGet(w, r)
 		return
 	}
 
-	orgs, err := model.OrgsByUserId(uid)
+	orgs, err := c.m.OrgsByUserId(uid)
 	if err == sql.ErrNoRows {
-		LandingGet(w, r)
+		c.LandingGet(w, r)
 		return
 	} else if len(orgs) == 1 {
 		http.Redirect(w, r, "/"+orgs[0].Key, http.StatusFound)
@@ -35,7 +34,7 @@ func HomeGet(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func LandingGet(w http.ResponseWriter, r *http.Request) {
+func (c *Context) LandingGet(w http.ResponseWriter, r *http.Request) {
 	err := render.Render(w, "landing.html", nil)
 	if err != nil {
 		InternalServerError(w, r)
