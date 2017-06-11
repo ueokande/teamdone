@@ -12,8 +12,6 @@ import (
 
 var UnknownAdapter = errors.New("unknown adapter")
 
-// var SQL *sql.DB
-
 type Database interface {
 	DSN() string
 }
