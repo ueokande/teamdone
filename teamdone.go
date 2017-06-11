@@ -39,12 +39,10 @@ func run() int {
 		LifeTime:   30 * 24 * time.Hour,
 	}
 	cc := controller.NewContext(db, sm, r)
-	web := route.WebHandler{C: cc}
-	api := route.ApiHandler{C: cc}
 
 	mux := http.NewServeMux()
-	mux.Handle("/", csrf.DefaultCSRF(web))
-	mux.Handle("/i/", csrf.DefaultCSRF(http.StripPrefix("/i", api)))
+	mux.Handle("/", csrf.DefaultCSRF(route.Web(cc)))
+	mux.Handle("/i/", csrf.DefaultCSRF(http.StripPrefix("/i", route.Api(cc))))
 	mux.HandleFunc("/assets/index.js", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "build/index.js")
 	})

@@ -8,11 +8,15 @@ import (
 
 const KeyLen = 32
 
-type WebHandler struct {
-	C *controller.Context
+func Web(c *controller.Context) http.Handler {
+	return &webHandler{c: c}
 }
 
-func (h WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+type webHandler struct {
+	c *controller.Context
+}
+
+func (h *webHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.NotFound(w, r)
 		return
@@ -20,12 +24,12 @@ func (h WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	switch {
 	case r.URL.Path == "/settings":
-		h.C.SettingsGet(w, r)
+		h.c.SettingsGet(w, r)
 	case r.URL.Path == "/":
-		h.C.HomeGet(w, r)
+		h.c.HomeGet(w, r)
 	case strings.HasPrefix(r.URL.Path, "/") && len(r.URL.Path[1:]) == KeyLen:
 		key := r.URL.Path[1:]
-		h.C.OrgGet(key, w, r)
+		h.c.OrgGet(key, w, r)
 	default:
 		http.NotFound(w, r)
 	}
