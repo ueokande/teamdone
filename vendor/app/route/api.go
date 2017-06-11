@@ -22,6 +22,6 @@ func (h apiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case r.Method == http.MethodPost && r.URL.Path == "/session/create":
 		h.c.SessionCreateApi(w, r)
 	default:
-		http.NotFound(w, r)
+		h.c.NotFoundApi(w, r)
 	}
 }

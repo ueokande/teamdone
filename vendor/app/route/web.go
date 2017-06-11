@@ -31,6 +31,6 @@ func (h *webHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		key := r.URL.Path[1:]
 		h.c.OrgGet(key, w, r)
 	default:
-		http.NotFound(w, r)
+		h.c.NotFound(w, r)
 	}
 }
