@@ -2,6 +2,7 @@ package model
 
 import (
 	"app/shared/database"
+	"database/sql"
 	"fmt"
 	"math/rand"
 	"os"
@@ -11,27 +12,24 @@ import (
 
 var context *Context
 
-func initializeDB() error {
+func initializeDB() (*sql.DB, error) {
 	conf, err := database.LoadConfig("../../../config/test.json")
 	if err != nil {
-		return err
+		return nil, err
 	}
-	db, err := database.Connect(conf)
-	if err != nil {
-		return err
-	}
-	context = &Context{SQL: db}
-	return nil
+	return database.Connect(conf)
 }
 
 func TestMain(m *testing.M) {
 	rand.Seed(time.Now().UnixNano())
 
-	err := initializeDB()
+	db, err := initializeDB()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
+
+	context = &Context{SQL: db}
 
 	os.Exit(m.Run())
 }

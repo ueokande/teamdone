@@ -2,8 +2,8 @@ package controller
 
 import (
 	"app/model"
-	"app/render"
 	"app/shared/database"
+	"database/sql"
 	"fmt"
 	"io"
 	"math/rand"
@@ -21,31 +21,27 @@ func (t *MockRender) Render(w io.Writer, name string, data interface{}) error {
 	return nil
 }
 
-func initializeDB() error {
+func initializeDB() (*sql.DB, error) {
 	conf, err := database.LoadConfig("../../../config/test.json")
 	if err != nil {
-		return err
+		return nil, err
 	}
-	db, err := database.Connect(conf)
-	if err != nil {
-		return err
-	}
-	context = &Context{
-		m: &model.Context{SQL: db},
-	}
-	return nil
+	return database.Connect(conf)
 }
 
 func TestMain(m *testing.M) {
 	rand.Seed(time.Now().UnixNano())
 
-	err := initializeDB()
+	db, err := initializeDB()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 
-	render.DefaultRenderer = &MockRender{}
+	context = &Context{
+		m: &model.Context{SQL: db},
+		r: &MockRender{},
+	}
 
 	os.Exit(m.Run())
 }

@@ -29,11 +29,12 @@ func run() int {
 		return 1
 	}
 
-	cc := controller.NewContext(db)
+	r := &render.TemplateRenderer{
+		Template: template.Must(template.ParseGlob("template/*.html")),
+	}
+	cc := controller.NewContext(db, r)
 	web := route.WebHandler{C: cc}
 	api := route.ApiHandler{C: cc}
-
-	render.InitTemplateRenderer(template.Must(template.ParseGlob("template/*.html")))
 
 	mux := http.NewServeMux()
 	mux.Handle("/", csrf.DefaultCSRF(web))
