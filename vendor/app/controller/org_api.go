@@ -2,9 +2,20 @@ package controller
 
 import (
 	"app/shared"
+	"database/sql"
 	"encoding/json"
 	"net/http"
 )
+
+type OrgGeyApi struct {
+	OrgKey string
+}
+
+type OrgGetApiResponse struct {
+	OrgId   int64
+	OrgName string
+	Key     string
+}
 
 type OrgCreateApiForm struct {
 	OrgName string
@@ -13,6 +24,27 @@ type OrgCreateApiForm struct {
 type OrgCreateApiResponse struct {
 	OrgName string
 	Key     string
+}
+
+func (c *Context) OrgGetApi(w http.ResponseWriter, r *http.Request) {
+	dec := json.NewDecoder(r.Body)
+
+	var form OrgGeyApi
+	err := dec.Decode(&form)
+	if err != nil {
+		jsonError(w, "invalid json", http.StatusBadRequest)
+		return
+	}
+	org, err := c.m.OrgByKey(form.OrgKey)
+	if err == sql.ErrNoRows {
+		jsonError(w, "org not found", http.StatusNotFound)
+		return
+	}
+	jsonOk(w, OrgGetApiResponse{
+		OrgId:   org.Id,
+		OrgName: org.Name,
+		Key:     org.Key,
+	})
 }
 
 func (c *Context) OrgCreateApi(w http.ResponseWriter, r *http.Request) {
