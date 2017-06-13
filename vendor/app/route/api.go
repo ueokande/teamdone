@@ -16,7 +16,7 @@ type apiHandler struct {
 func (h apiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch {
 	case r.Method == http.MethodPost && r.URL.Path == "/org/get":
-		h.c.OrgCreateApi(w, r)
+		h.c.OrgGetApi(w, r)
 	case r.Method == http.MethodPost && r.URL.Path == "/org/create":
 		h.c.OrgCreateApi(w, r)
 	case r.Method == http.MethodPost && r.URL.Path == "/session/get":
