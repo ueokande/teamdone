@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import AppBar from 'material-ui/AppBar';
 import ReactDOM from 'react-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { connect } from 'react-redux';
@@ -7,6 +8,7 @@ import { Provider } from "react-redux"
 import createStoreWithMiddleware from './store/configure';
 import TaskList from './component/task-list';
 import UserFormDialog from './component/user-form-dialog';
+import * as org from './action/org';
 import * as user from './action/user';
 
 class Org extends Component {
@@ -15,7 +17,9 @@ class Org extends Component {
   }
 
   componentDidMount() {
+    let key = document.location.pathname.split("/")[1];
     this.props.dispatch(user.initialize());
+    this.props.dispatch(org.initialize(key));
   }
 
   submitUserCreate(userName) {
@@ -25,6 +29,10 @@ class Org extends Component {
   render() {
     return (
       <div>
+        <AppBar
+          title={this.props.orgName}
+          iconClassNameRight="muidocs-icon-navigation-expand-more"
+        />
         <UserFormDialog
           open={this.props.userFormOpen}
           userNameError={this.props.userNameError}
@@ -49,13 +57,13 @@ class Org extends Component {
 
 const store = createStoreWithMiddleware();
 
-Org = connect(({user}) => {
+Org = connect(({user, org}) => {
   return {
     userFormOpen: user.formOpen,
-    userNameError: user.formNameError
+    userNameError: user.formNameError,
+    orgName: org.orgName
   }
 })(Org)
-
 
 window.addEventListener('load', () => {
   var parent = document.getElementById('teamdone-org');

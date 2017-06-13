@@ -6,7 +6,7 @@ const initialState = {
   formNameError: "",
 }
 
-export default function tasks(state = initialState, action) {
+export default function user(state = initialState, action) {
   switch (action.type) {
   case "USER_FORM":
     return Object.assign({}, state, {

@@ -14,7 +14,7 @@ type OrgGeyApi struct {
 type OrgGetApiResponse struct {
 	OrgId   int64
 	OrgName string
-	Key     string
+	OrgKey  string
 }
 
 type OrgCreateApiForm struct {
@@ -43,7 +43,7 @@ func (c *Context) OrgGetApi(w http.ResponseWriter, r *http.Request) {
 	jsonOk(w, OrgGetApiResponse{
 		OrgId:   org.Id,
 		OrgName: org.Name,
-		Key:     org.Key,
+		OrgKey:  org.Key,
 	})
 }
 

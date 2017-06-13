@@ -18,6 +18,12 @@ export function orgCreate(orgName) {
   })
 }
 
+export function orgGet(key) {
+  return post('/i/org/get', {
+    OrgKey: key
+  })
+}
+
 export function sessionGet(userName) {
   return post('/i/session/get', {})
 }
